@@ -13,7 +13,7 @@ class CliArgs
             $toAdd = [$arg];
             if ($dashCount) {
                 list($newKey, $value) = $this->parseArg($arg);
-                $toAdd = ($dashCount === 1 && is_null($value)) ? $toAdd = $this->parseMultipleArgs($newKey) : [$newKey => $value];
+                $toAdd = ($dashCount === 1 && is_null($value)) ? $this->parseMultipleArgs($newKey) : [$newKey => $value];
             }
             $this->mergeArgs($newArguments, $toAdd);
         }
