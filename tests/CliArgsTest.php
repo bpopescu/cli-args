@@ -2,7 +2,6 @@
 
 namespace bpopescu\CliArgs\Tests;
 
-
 use bpopescu\CliArgs\CliArgs;
 use PHPUnit\Framework\TestCase;
 
@@ -11,8 +10,6 @@ class CliArgsTest extends TestCase
     public function parseDP()
     {
         return [
-            [['--a', 'b']],
-            [['-a', 'b']],
             [['--a:b']],
             [['--a=b']],
             [['-a:b']],
@@ -52,7 +49,7 @@ class CliArgsTest extends TestCase
         $this->assertArrayHasKey('a', $cliArgs);
         $this->assertTrue($cliArgs['a']);
         $this->assertArrayHasKey('b', $cliArgs);
-        $this->assertEquals('c', $cliArgs['b']);
+        $this->assertTrue(in_array('c', $cliArgs));
     }
 
     public function testParseMultipleLetters()

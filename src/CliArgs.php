@@ -1,35 +1,19 @@
-<?php namespace bpopescu\CliArgs;
+<?php
+
+namespace bpopescu\CliArgs;
 
 class CliArgs
 {
-
     public function parse(array $arguments = null)
     {
         $whatToParse = $this->whatToParse($arguments);
         $newArguments = [];
-        $cachedKey = null;
         while ($arg = array_shift($whatToParse)) {
             $dashCount = substr_count($arg, '-');
-            if ($dashCount > 0) {
+            $toAdd = [$arg];
+            if ($dashCount) {
                 list($newKey, $value) = $this->parseArg($arg);
-                if ($dashCount === 1 && strlen($newKey) > 1) {
-                    $this->mergeArgs($newArguments, $this->parseMultipleArgs($newKey));
-                    continue;
-                }
-
-                if (is_null($value) && is_null($cachedKey)) {
-                    $cachedKey = $newKey;
-                    continue;
-                } elseif (is_null($value) && !is_null($cachedKey)) {
-                    $toAdd = [$cachedKey => true, $newKey => true];
-                    $cachedKey = $newKey;
-                } else {
-                    $toAdd = [$newKey => $value];
-                }
-
-            } else {
-                $toAdd = !empty($cachedKey) ? [$cachedKey => $arg] : [$arg];
-                $cachedKey = null;
+                $toAdd = ($dashCount === 1 && is_null($value)) ? $toAdd = $this->parseMultipleArgs($newKey) : [$newKey => $value];
             }
             $this->mergeArgs($newArguments, $toAdd);
         }
@@ -38,7 +22,7 @@ class CliArgs
 
     private function whatToParse(array $arguments): array
     {
-        if(empty($arguments)){
+        if (empty($arguments)) {
             $serverArgs = $_SERVER['argv'] ?? [];
             array_shift($serverArgs);
             $arguments = $serverArgs;
@@ -65,7 +49,6 @@ class CliArgs
         if (is_string($key)) {
             $key = str_replace('-', '', $key);
         }
-
         return [$key, $value];
     }
 
